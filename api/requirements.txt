@@ -1,3 +1,4 @@
 flask
 yahooquery
 yfinance
+gunicorn==19.3.0
