@@ -62,3 +62,6 @@ def getData():
             "aquired beta" : aquired_beta,
             "TYTR" : ten_year_treasury_rate,
             'success' : "YES"}
+
+if __name__ == "__main__":
+    app.run(debug=False)
