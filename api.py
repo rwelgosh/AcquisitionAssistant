@@ -2,7 +2,11 @@ from flask import Flask, request
 from yahooquery import Ticker
 import yfinance as yahooFinance
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./public', static_url_path='/')
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 @app.route('/api/route')
 def predict():

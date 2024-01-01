@@ -1,4 +1,4 @@
-#!/Users/raymondwelgosh/AquisitionAssistant/aquisition-assistant/api/venv/bin/python3
+#!/Users/raymondwelgosh/AquisitionAssistant/aquisition-assistant/venv/bin/python3
 
 import datetime
 import os
