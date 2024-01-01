@@ -4,7 +4,7 @@ export default function Calculate(props) {
     const data = props.data
     const inputData = props.inputData
     var output = <p></p>
-    if (data["success"] == "YES" && inputData["render"]) {
+    if (data["success"] === "YES" && inputData["render"]) {
         const aquirer_income_statement = JSON.parse(data["aquirer income statement"])
         const aquirer_balance_sheet = JSON.parse(data["aquirer balance sheet"])
         const aquirer_cash_flow = JSON.parse(data["aquirer cash flow"])
