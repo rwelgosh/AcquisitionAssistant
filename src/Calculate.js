@@ -31,14 +31,19 @@ export default function Calculate(props) {
             // Average Ratio
             var netRevenue_CompanyB = aquired_income_statement["TotalRevenue"][i]
             var FCFM = FCF / netRevenue_CompanyB
-            FCFM_sum += FCFM
+
+            if (!isNaN(FCFM)) {
+                FCFM_sum += FCFM
+            }
         }
+        // console.log(FCFM_sum)
 
         // Average Ratio
         var Avg_Ratio = FCFM_sum / 5
 
         // Projected Net Revenue
-        var PNR = aquired_income_statement["TotalRevenue"][4] * (1+inputData['netrevenuegrowthrate'])
+        let index = Object.keys(aquired_income_statement["TotalRevenue"]).length - 1
+        var PNR = aquired_income_statement["TotalRevenue"][index] * (1+inputData['netrevenuegrowthrate'])
 
         // Project Free Cash Flow - 5 Year
         var PFCF_5Year = PNR * Avg_Ratio
@@ -50,8 +55,11 @@ export default function Calculate(props) {
         for (let i = 0; i < 5; i++) {
             // Gross Profit Margin
             var GPM = aquired_income_statement["GrossProfit"][i] / aquired_income_statement["TotalRevenue"][i]
-            GPM_array.push(GPM)
-            GPM_sum += GPM
+            
+            if (!isNaN(GPM)) {
+                GPM_sum += GPM
+                GPM_array.push(GPM)
+            }
         }
 
         // Average Gross Profit Margin
@@ -64,7 +72,8 @@ export default function Calculate(props) {
         var PGP = PNR - PCoGS
 
         // Projected Selling General and Administrative
-        var PSGnA = aquired_income_statement["SellingGeneralAndAdministration"][4] * (1+inputData['netrevenuegrowthrate'])
+        index = Object.keys(aquired_income_statement["SellingGeneralAndAdministration"]).length - 1
+        var PSGnA = aquired_income_statement["SellingGeneralAndAdministration"][index] * (1+inputData['netrevenuegrowthrate'])
 
         // Projected Operating Income / EBIT
         var POI = PGP - PSGnA
@@ -79,31 +88,39 @@ export default function Calculate(props) {
         var NOPAT_AFS = PNOPAT + SPT 
 
         // Aquisition Price Per Share 
-        var APPS = aquired_history['close'][248] * inputData['aquisitionfees']
+        index = Object.keys(aquired_history['close']).length - 1
+        var APPS = aquired_history['close'][index] * inputData['aquisitionfees']
 
         // Market Cap
-        var MC = aquired_income_statement['DilutedAverageShares'][4] * aquired_history['close'][248]
+        let index_1 = Object.keys(aquired_history['close']).length - 1
+        let index_2 = Object.keys(aquired_income_statement['DilutedAverageShares']).length - 1
+        var MC = aquired_income_statement['DilutedAverageShares'][index_2] * aquired_history['close'][index_1]
 
         // Aquisition Equity Value 
-        var AEV = APPS * aquired_income_statement['DilutedAverageShares'][4]
+        index = Object.keys(aquired_income_statement['DilutedAverageShares']).length - 1
+        var AEV = APPS * aquired_income_statement['DilutedAverageShares'][index]
 
         // Aquisition Enterprise Value
-        var AquisitionEnterpriseValue = AEV + aquired_balance_sheet['NetDebt'][3]
+        index = Object.keys(aquired_balance_sheet['NetDebt']).length - 1
+        var AquisitionEnterpriseValue = AEV + aquired_balance_sheet['NetDebt'][index]
 
         // Return On Invested Capital
         var ROIV = NOPAT_AFS / AquisitionEnterpriseValue
 
-        var KD = aquired_income_statement['InterestExpense'][4] / aquired_balance_sheet['TotalDebt'][3]
+        let index_IE = Object.keys(aquired_income_statement['InterestExpense']).length - 1
+        let index_TD = Object.keys(aquired_balance_sheet['TotalDebt']).length - 1
+        var KD = aquired_income_statement['InterestExpense'][index_IE] / aquired_balance_sheet['TotalDebt'][index_TD]
         var KE = data['TYTR'] + (data['aquired beta'] * (0.1 - data['TYTR']))
 
         // Weighted Average Cost of Capital
+        index = Object.keys(aquired_balance_sheet['StockholdersEquity']).length - 1
         var WACC = (
             (
-                (aquired_balance_sheet['TotalDebt'][3] / (aquired_balance_sheet['TotalDebt'][3] + aquired_balance_sheet['StockholdersEquity'][3])) * KD * (1-inputData['effectivetaxrate'])
+                (aquired_balance_sheet['TotalDebt'][index_TD] / (aquired_balance_sheet['TotalDebt'][index_TD] + aquired_balance_sheet['StockholdersEquity'][index])) * KD * (1-inputData['effectivetaxrate'])
             ) 
             + 
             (
-                (aquired_balance_sheet['TotalDebt'][3] / (aquired_balance_sheet['TotalDebt'][3] + aquired_balance_sheet['StockholdersEquity'][3])) * KE
+                (aquired_balance_sheet['TotalDebt'][index_TD] / (aquired_balance_sheet['TotalDebt'][index_TD] + aquired_balance_sheet['StockholdersEquity'][index])) * KE
             )
         )
 
