@@ -5,17 +5,17 @@ import Calculate from "./Calculate"
 
 function App() {
   const [data, setData] = React.useState(
-    {"aquirer balance sheet" : "{}", "aquirer income statement" : "{}", 
-    "aquirer cash flow" : "{}", "aquirer history" : "{}",
-    "aquirer beta" : 0,
-    "aquired balance sheet" : "{}", "aquired income statement" : "{}", 
-    "aquired cash flow" : "{}", "aquired history" : "{}",
-    "aquired beta" : 0,
+    {"acquirer balance sheet" : "{}", "acquirer income statement" : "{}", 
+    "acquirer cash flow" : "{}", "acquirer history" : "{}",
+    "acquirer beta" : 0,
+    "acquired balance sheet" : "{}", "acquired income statement" : "{}", 
+    "acquired cash flow" : "{}", "acquired history" : "{}",
+    "acquired beta" : 0,
     "TYTR" : 0,
     'success' : "NO"}
   )
   const [inputData, setInputData] = React.useState(
-    {"aquirer" : "", "aquired" : "",
+    {"acquirer" : "", "acquired" : "",
     "percentdebt" : "0.5", "percentequity" : "0.5",
     "aquisitionfees" : "0.5", "synergies" : "0.5",
     "marginaltaxrate" : "0.5", "effectivetaxrate" : "0.5", 
@@ -49,26 +49,26 @@ function App() {
     .then(response => response.json())
     .then(
       function(data) {
-        console.log("Aquirer Income Statement")
-        console.log(JSON.parse(data["aquirer income statement"]))
-        console.log("Aquirer Balance Sheet")
-        console.log(JSON.parse(data["aquirer balance sheet"]))
-        console.log("Aquirer Cash Flow")
-        console.log(JSON.parse(data["aquirer cash flow"]))
-        console.log("Aquirer History")
-        console.log(JSON.parse(data["aquirer history"]))
-        console.log("Aquirer Beta")
-        console.log(data["aquirer beta"])
-        console.log("Aquired Income Statement")
-        console.log(JSON.parse(data["aquired income statement"]))
-        console.log("Aquired Balance Sheet")
-        console.log(JSON.parse(data["aquired balance sheet"]))
-        console.log("Aquired Cash Flow")
-        console.log(JSON.parse(data["aquired cash flow"]))
-        console.log("Aquired History")
-        console.log(JSON.parse(data["aquired history"]))
-        console.log("Aquired Beta")
-        console.log(data["aquired beta"])
+        console.log("acquirer Income Statement")
+        console.log(JSON.parse(data["acquirer income statement"]))
+        console.log("acquirer Balance Sheet")
+        console.log(JSON.parse(data["acquirer balance sheet"]))
+        console.log("acquirer Cash Flow")
+        console.log(JSON.parse(data["acquirer cash flow"]))
+        console.log("acquirer History")
+        console.log(JSON.parse(data["acquirer history"]))
+        console.log("acquirer Beta")
+        console.log(data["acquirer beta"])
+        console.log("acquired Income Statement")
+        console.log(JSON.parse(data["acquired income statement"]))
+        console.log("acquired Balance Sheet")
+        console.log(JSON.parse(data["acquired balance sheet"]))
+        console.log("acquired Cash Flow")
+        console.log(JSON.parse(data["acquired cash flow"]))
+        console.log("acquired History")
+        console.log(JSON.parse(data["acquired history"]))
+        console.log("acquired Beta")
+        console.log(data["acquired beta"])
         console.log("TYTR")
         console.log(data["TYTR"])
         return setData({
@@ -90,21 +90,21 @@ function App() {
         <div className="content-body">
           <form method='post' onSubmit={handleRequest} className="content-container">
             <h2>Input</h2>
-            <div className="aquirer-container container">
+            <div className="acquirer-container container">
               <input 
-                className='app--aquirer'
-                name='aquirer'
+                className='app--acquirer'
+                name='acquirer'
                 type='text'
-                placeholder='Aquirer'
+                placeholder='acquirer'
               />
             </div>
 
-            <div className="aquired-container container">
+            <div className="acquired-container container">
               <input 
-                className='app--aquired'
-                name="aquired"
+                className='app--acquired'
+                name="acquired"
                 type='text'
-                placeholder='Aquired'
+                placeholder='acquired'
               />
             </div>
 

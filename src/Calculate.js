@@ -5,31 +5,31 @@ export default function Calculate(props) {
     const inputData = props.inputData
     var output = <p></p>
     if (data["success"] === "YES" && inputData["render"]) {
-        const aquirer_income_statement = JSON.parse(data["aquirer income statement"])
-        const aquirer_balance_sheet = JSON.parse(data["aquirer balance sheet"])
-        const aquirer_cash_flow = JSON.parse(data["aquirer cash flow"])
-        const aquirer_history = JSON.parse(data["aquirer history"])
-        const aquired_income_statement = JSON.parse(data["aquired income statement"])
-        const aquired_balance_sheet = JSON.parse(data["aquired balance sheet"])
-        const aquired_cash_flow = JSON.parse(data["aquired cash flow"])
-        const aquired_history = JSON.parse(data["aquired history"])
+        const acquirer_income_statement = JSON.parse(data["acquirer income statement"])
+        const acquirer_balance_sheet = JSON.parse(data["acquirer balance sheet"])
+        const acquirer_cash_flow = JSON.parse(data["acquirer cash flow"])
+        const acquirer_history = JSON.parse(data["acquirer history"])
+        const acquired_income_statement = JSON.parse(data["acquired income statement"])
+        const acquired_balance_sheet = JSON.parse(data["acquired balance sheet"])
+        const acquired_cash_flow = JSON.parse(data["acquired cash flow"])
+        const acquired_history = JSON.parse(data["acquired history"])
 
         // Net Operating Profit After Tax
-        var EBIT_CompanyB_values = aquired_income_statement["EBIT"]
+        var EBIT_CompanyB_values = acquired_income_statement["EBIT"]
         var EBIT_CompanyB = EBIT_CompanyB_values[4]
         var NOPAT = EBIT_CompanyB * (1-inputData['effectivetaxrate'])
         
         // Free Cash Flow Margin Average - 5 Years
         var FCFM_sum = 0
 
-        var FCF_5yr = aquired_cash_flow["FreeCashFlow"]
+        var FCF_5yr = acquired_cash_flow["FreeCashFlow"]
 
         for(let i = 0; i < 5; i++) {
             // Free Cash Flow
             var FCF = FCF_5yr[i]
 
             // Average Ratio
-            var netRevenue_CompanyB = aquired_income_statement["TotalRevenue"][i]
+            var netRevenue_CompanyB = acquired_income_statement["TotalRevenue"][i]
             var FCFM = FCF / netRevenue_CompanyB
 
             if (!isNaN(FCFM)) {
@@ -42,8 +42,8 @@ export default function Calculate(props) {
         var Avg_Ratio = FCFM_sum / 5
 
         // Projected Net Revenue
-        let index = Object.keys(aquired_income_statement["TotalRevenue"]).length - 1
-        var PNR = aquired_income_statement["TotalRevenue"][index] * (1+inputData['netrevenuegrowthrate'])
+        let index = Object.keys(acquired_income_statement["TotalRevenue"]).length - 1
+        var PNR = acquired_income_statement["TotalRevenue"][index] * (1+inputData['netrevenuegrowthrate'])
 
         // Project Free Cash Flow - 5 Year
         var PFCF_5Year = PNR * Avg_Ratio
@@ -54,7 +54,7 @@ export default function Calculate(props) {
         
         for (let i = 0; i < 5; i++) {
             // Gross Profit Margin
-            var GPM = aquired_income_statement["GrossProfit"][i] / aquired_income_statement["TotalRevenue"][i]
+            var GPM = acquired_income_statement["GrossProfit"][i] / acquired_income_statement["TotalRevenue"][i]
             
             if (!isNaN(GPM)) {
                 GPM_sum += GPM
@@ -72,8 +72,8 @@ export default function Calculate(props) {
         var PGP = PNR - PCoGS
 
         // Projected Selling General and Administrative
-        index = Object.keys(aquired_income_statement["SellingGeneralAndAdministration"]).length - 1
-        var PSGnA = aquired_income_statement["SellingGeneralAndAdministration"][index] * (1+inputData['netrevenuegrowthrate'])
+        index = Object.keys(acquired_income_statement["SellingGeneralAndAdministration"]).length - 1
+        var PSGnA = acquired_income_statement["SellingGeneralAndAdministration"][index] * (1+inputData['netrevenuegrowthrate'])
 
         // Projected Operating Income / EBIT
         var POI = PGP - PSGnA
@@ -88,39 +88,39 @@ export default function Calculate(props) {
         var NOPAT_AFS = PNOPAT + SPT 
 
         // Aquisition Price Per Share 
-        index = Object.keys(aquired_history['close']).length - 1
-        var APPS = aquired_history['close'][index] * inputData['aquisitionfees']
+        index = Object.keys(acquired_history['close']).length - 1
+        var APPS = acquired_history['close'][index] * inputData['aquisitionfees']
 
         // Market Cap
-        let index_1 = Object.keys(aquired_history['close']).length - 1
-        let index_2 = Object.keys(aquired_income_statement['DilutedAverageShares']).length - 1
-        var MC = aquired_income_statement['DilutedAverageShares'][index_2] * aquired_history['close'][index_1]
+        let index_1 = Object.keys(acquired_history['close']).length - 1
+        let index_2 = Object.keys(acquired_income_statement['DilutedAverageShares']).length - 1
+        var MC = acquired_income_statement['DilutedAverageShares'][index_2] * acquired_history['close'][index_1]
 
         // Aquisition Equity Value 
-        index = Object.keys(aquired_income_statement['DilutedAverageShares']).length - 1
-        var AEV = APPS * aquired_income_statement['DilutedAverageShares'][index]
+        index = Object.keys(acquired_income_statement['DilutedAverageShares']).length - 1
+        var AEV = APPS * acquired_income_statement['DilutedAverageShares'][index]
 
         // Aquisition Enterprise Value
-        index = Object.keys(aquired_balance_sheet['NetDebt']).length - 1
-        var AquisitionEnterpriseValue = AEV + aquired_balance_sheet['NetDebt'][index]
+        index = Object.keys(acquired_balance_sheet['NetDebt']).length - 1
+        var AquisitionEnterpriseValue = AEV + acquired_balance_sheet['NetDebt'][index]
 
         // Return On Invested Capital
         var ROIV = NOPAT_AFS / AquisitionEnterpriseValue
 
-        let index_IE = Object.keys(aquired_income_statement['InterestExpense']).length - 1
-        let index_TD = Object.keys(aquired_balance_sheet['TotalDebt']).length - 1
-        var KD = aquired_income_statement['InterestExpense'][index_IE] / aquired_balance_sheet['TotalDebt'][index_TD]
-        var KE = data['TYTR'] + (data['aquired beta'] * (0.1 - data['TYTR']))
+        let index_IE = Object.keys(acquired_income_statement['InterestExpense']).length - 1
+        let index_TD = Object.keys(acquired_balance_sheet['TotalDebt']).length - 1
+        var KD = acquired_income_statement['InterestExpense'][index_IE] / acquired_balance_sheet['TotalDebt'][index_TD]
+        var KE = data['TYTR'] + (data['acquired beta'] * (0.1 - data['TYTR']))
 
         // Weighted Average Cost of Capital
-        index = Object.keys(aquired_balance_sheet['StockholdersEquity']).length - 1
+        index = Object.keys(acquired_balance_sheet['StockholdersEquity']).length - 1
         var WACC = (
             (
-                (aquired_balance_sheet['TotalDebt'][index_TD] / (aquired_balance_sheet['TotalDebt'][index_TD] + aquired_balance_sheet['StockholdersEquity'][index])) * KD * (1-inputData['effectivetaxrate'])
+                (acquired_balance_sheet['TotalDebt'][index_TD] / (acquired_balance_sheet['TotalDebt'][index_TD] + acquired_balance_sheet['StockholdersEquity'][index])) * KD * (1-inputData['effectivetaxrate'])
             ) 
             + 
             (
-                (aquired_balance_sheet['TotalDebt'][index_TD] / (aquired_balance_sheet['TotalDebt'][index_TD] + aquired_balance_sheet['StockholdersEquity'][index])) * KE
+                (acquired_balance_sheet['TotalDebt'][index_TD] / (acquired_balance_sheet['TotalDebt'][index_TD] + acquired_balance_sheet['StockholdersEquity'][index])) * KE
             )
         )
 
